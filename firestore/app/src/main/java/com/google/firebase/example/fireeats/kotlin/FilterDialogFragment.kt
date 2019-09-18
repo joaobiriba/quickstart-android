@@ -2,10 +2,10 @@ package com.google.firebase.example.fireeats.kotlin
 
 import android.content.Context
 import android.os.Bundle
-import android.support.v4.app.DialogFragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.fragment.app.DialogFragment
 import com.google.firebase.example.fireeats.R
 import com.google.firebase.example.fireeats.kotlin.model.Restaurant
 import com.google.firebase.firestore.Query
@@ -119,7 +119,7 @@ class FilterDialogFragment : DialogFragment() {
         return rootView
     }
 
-    override fun onAttach(context: Context?) {
+    override fun onAttach(context: Context) {
         super.onAttach(context)
 
         if (context is FilterListener) {
@@ -129,7 +129,7 @@ class FilterDialogFragment : DialogFragment() {
 
     override fun onResume() {
         super.onResume()
-        dialog.window?.setLayout(
+        dialog?.window?.setLayout(
                 ViewGroup.LayoutParams.MATCH_PARENT,
                 ViewGroup.LayoutParams.WRAP_CONTENT)
     }

@@ -4,9 +4,9 @@ import android.app.NotificationChannel
 import android.app.NotificationManager
 import android.os.Build
 import android.os.Bundle
-import android.support.v7.app.AppCompatActivity
 import android.util.Log
 import android.widget.Toast
+import androidx.appcompat.app.AppCompatActivity
 import com.google.android.gms.tasks.OnCompleteListener
 import com.google.firebase.iid.FirebaseInstanceId
 import com.google.firebase.messaging.FirebaseMessaging
@@ -40,7 +40,7 @@ class MainActivity : AppCompatActivity() {
         // [START handle_data_extras]
         intent.extras?.let {
             for (key in it.keySet()) {
-                val value = intent.extras.get(key)
+                val value = intent.extras?.get(key)
                 Log.d(TAG, "Key: $key Value: $value")
             }
         }
@@ -63,6 +63,7 @@ class MainActivity : AppCompatActivity() {
 
         logTokenButton.setOnClickListener {
             // Get token
+            // [START retrieve_current_token]
             FirebaseInstanceId.getInstance().instanceId
                     .addOnCompleteListener(OnCompleteListener { task ->
                         if (!task.isSuccessful) {
@@ -78,7 +79,10 @@ class MainActivity : AppCompatActivity() {
                         Log.d(TAG, msg)
                         Toast.makeText(baseContext, msg, Toast.LENGTH_SHORT).show()
                     })
+            // [END retrieve_current_token]
         }
+
+        Toast.makeText(this, "See README for setup instructions", Toast.LENGTH_SHORT).show()
     }
 
     companion object {

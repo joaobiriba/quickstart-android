@@ -20,7 +20,7 @@ import android.graphics.ImageFormat;
 import android.graphics.Rect;
 import android.graphics.YuvImage;
 import android.os.SystemClock;
-import android.support.annotation.NonNull;
+import androidx.annotation.NonNull;
 import android.util.Log;
 
 import com.google.android.gms.tasks.Continuation;
@@ -28,16 +28,16 @@ import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.Task;
 import com.google.android.gms.tasks.Tasks;
 import com.google.firebase.ml.common.FirebaseMLException;
+import com.google.firebase.ml.common.modeldownload.FirebaseLocalModel;
+import com.google.firebase.ml.common.modeldownload.FirebaseModelDownloadConditions;
+import com.google.firebase.ml.common.modeldownload.FirebaseModelManager;
+import com.google.firebase.ml.common.modeldownload.FirebaseRemoteModel;
 import com.google.firebase.ml.custom.FirebaseModelDataType;
 import com.google.firebase.ml.custom.FirebaseModelInputOutputOptions;
 import com.google.firebase.ml.custom.FirebaseModelInputs;
 import com.google.firebase.ml.custom.FirebaseModelInterpreter;
-import com.google.firebase.ml.custom.FirebaseModelManager;
 import com.google.firebase.ml.custom.FirebaseModelOptions;
 import com.google.firebase.ml.custom.FirebaseModelOutputs;
-import com.google.firebase.ml.custom.model.FirebaseCloudModelSource;
-import com.google.firebase.ml.custom.model.FirebaseLocalModelSource;
-import com.google.firebase.ml.custom.model.FirebaseModelDownloadConditions;
 
 import java.io.BufferedReader;
 import java.io.ByteArrayOutputStream;
@@ -157,17 +157,16 @@ public class CustomImageClassifier {
                 LOCAL_FLOAT_MODEL_PATH;
         FirebaseModelOptions modelOptions =
                 new FirebaseModelOptions.Builder()
-                        .setCloudModelName(hostedModelName)
+                        .setRemoteModelName(hostedModelName)
                         .setLocalModelName(localModelName)
                         .build();
         FirebaseModelDownloadConditions conditions = new FirebaseModelDownloadConditions
                 .Builder()
                 .requireWifi()
                 .build();
-        FirebaseLocalModelSource localModelSource =
-                new FirebaseLocalModelSource.Builder(localModelName)
-                        .setAssetFilePath(localModelPath).build();
-        FirebaseCloudModelSource cloudSource = new FirebaseCloudModelSource.Builder
+        FirebaseLocalModel localModel = new FirebaseLocalModel.Builder(localModelName)
+                .setAssetFilePath(localModelPath).build();
+        FirebaseRemoteModel remoteModel = new FirebaseRemoteModel.Builder
                 (hostedModelName)
                 .enableModelUpdates(true)
                 .setInitialDownloadConditions(conditions)
@@ -175,8 +174,8 @@ public class CustomImageClassifier {
                 // conditions for updates.
                 .build();
         FirebaseModelManager manager = FirebaseModelManager.getInstance();
-        manager.registerLocalModelSource(localModelSource);
-        manager.registerCloudModelSource(cloudSource);
+        manager.registerLocalModel(localModel);
+        manager.registerRemoteModel(remoteModel);
         interpreter = FirebaseModelInterpreter.getInstance(modelOptions);
         labelList = loadLabelList(context.getApplicationContext());
         Log.d(TAG, "Created a Custom Image Classifier.");

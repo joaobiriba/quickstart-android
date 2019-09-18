@@ -22,8 +22,8 @@ import android.graphics.ImageFormat;
 import android.graphics.SurfaceTexture;
 import android.hardware.Camera;
 import android.hardware.Camera.CameraInfo;
-import android.support.annotation.Nullable;
-import android.support.annotation.RequiresPermission;
+import androidx.annotation.Nullable;
+import androidx.annotation.RequiresPermission;
 import android.util.Log;
 import android.view.Surface;
 import android.view.SurfaceHolder;
@@ -129,6 +129,12 @@ public class CameraSource {
     graphicOverlay = overlay;
     graphicOverlay.clear();
     processingRunnable = new FrameProcessingRunnable();
+
+    if (Camera.getNumberOfCameras() == 1) {
+      CameraInfo cameraInfo = new CameraInfo();
+      Camera.getCameraInfo(0, cameraInfo);
+      facing = cameraInfo.facing;
+    }
   }
 
   // ==============================================================================================
